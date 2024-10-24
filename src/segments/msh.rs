@@ -1,4 +1,6 @@
-use crate::segments::SegmentParsingError;
+use crate::segments::{
+    empty_if_none, optional_vec_to_string, some_if_not_empty, split_repeated, SegmentParsingError,
+};
 use derivative::Derivative;
 use std::fmt;
 use std::str::FromStr;
@@ -35,37 +37,6 @@ pub struct MSH {
     pub msh_23_receiving_responsible_organization: Option<String>,
     pub msh_24_sending_network_address: Option<String>,
     pub msh_25_receiving_network_address: Option<String>,
-}
-
-fn some_if_not_empty(x: &str) -> Option<String> {
-    if x.len() > 0 {
-        Some(x.to_string())
-    } else {
-        None
-    }
-}
-
-fn empty_if_none(x: &Option<String>) -> String {
-    match x.as_ref() {
-        None => String::from(""),
-        Some(v) => v.clone(),
-    }
-}
-
-fn optional_vec_to_string(x: &Option<Vec<String>>, delim: &str) -> String {
-    match x.as_ref() {
-        None => String::from(""),
-        Some(v) => v.join(delim),
-    }
-}
-
-fn split_repeated(repeat_delim: &str, x: &str) -> Option<Vec<String>> {
-    let y: Vec<String> = x.split(repeat_delim).map(|y| y.to_string()).collect();
-    if y.is_empty() {
-        None
-    } else {
-        Some(y)
-    }
 }
 
 impl fmt::Display for MSH {

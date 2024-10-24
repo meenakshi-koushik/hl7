@@ -72,14 +72,45 @@ pub use segment::*;
 pub use sft::*;
 pub use uac::*;
 
+pub const DEFAULT_FIELD_SEPARATOR: &str = "|";
+
 #[derive(Debug, Fail)]
 pub enum SegmentParsingError {
     #[fail(display = "invalid toolchain name: {}", name)]
-    Generic {
-        name: String,
-    },
+    Generic { name: String },
     #[fail(display = "error parsing MSH segment: {}", version)]
-    MSH {
-        version: String,
+    MSH { version: String },
+}
+
+
+pub fn some_if_not_empty(x: &str) -> Option<String> {
+    if x.len() > 0 {
+        Some(x.to_string())
+    } else {
+        None
     }
 }
+
+pub fn empty_if_none(x: &Option<String>) -> String {
+    match x.as_ref() {
+        None => String::from(""),
+        Some(v) => v.clone(),
+    }
+}
+
+pub fn optional_vec_to_string(x: &Option<Vec<String>>, delim: &str) -> String {
+    match x.as_ref() {
+        None => String::from(""),
+        Some(v) => v.join(delim),
+    }
+}
+
+pub fn split_repeated(repeat_delim: &str, x: &str) -> Option<Vec<String>> {
+    let y: Vec<String> = x.split(repeat_delim).map(|y| y.to_string()).collect();
+    if y.is_empty() {
+        None
+    } else {
+        Some(y)
+    }
+}
+
